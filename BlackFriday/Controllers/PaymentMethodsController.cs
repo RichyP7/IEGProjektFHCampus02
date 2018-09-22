@@ -40,7 +40,7 @@ namespace BlackFriday.Controllers
 
 
 
-            HttpResponseMessage response = client.GetAsync(creditcardServiceBaseAddress[0]+ "/api/AcceptedCreditCards").Result;
+            HttpResponseMessage response = client.GetAsync("/api/AcceptedCreditCards").Result;
             if (response.IsSuccessStatusCode)
             {
                 acceptedPaymentMethods = response.Content.ReadAsAsync<List<string>>().Result;

@@ -19,8 +19,8 @@ namespace BlackFriday
 {
     public class Startup
     {
-        private const string BaseURI = "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
-        private const string ALTERNATIVEURI = "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/";
+        private const string BaseURI = "https://WRONGiegeasycreditcardservice20180922084919.azurewebsites.net/api/AcceptedCreditCards/";// "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
+        private const string ALTERNATIVEURI = "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/api/AcceptedCreditCards/";
 
         public Startup(IConfiguration configuration)
         {
@@ -44,15 +44,15 @@ namespace BlackFriday
                 client.BaseAddress = new Uri(BaseURI);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             }).AddTransientHttpErrorPolicy(
-                builder => builder.FallbackAsync(new HttpResponseMessage()));
-                //, onFallback: async (exception, context) =>
-                //{
-                //    HttpClient client = new HttpClient();
-                //    client.BaseAddress = new Uri(ALTERNATIVEURI);
-                //    client.DefaultRequestHeaders.Accept.Clear();
-                //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //    HttpResponseMessage response = client.GetAsync(ALTERNATIVEURI + "/api/products").Result;
-                //});
+                builder => builder.FallbackAsync(new HttpResponseMessage()
+                , onFallbackAsync: async (exception, context) =>
+                {
+                    HttpClient client = new HttpClient();
+                    client.BaseAddress = new Uri(ALTERNATIVEURI);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage response = client.GetAsync(ALTERNATIVEURI).Result;
+                }));
 
         }
 
