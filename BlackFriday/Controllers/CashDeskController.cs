@@ -17,7 +17,7 @@ namespace BlackFriday.Controllers
     {
 
         private readonly ILogger<CashDeskController> _logger;
-        private static readonly string creditcardServiceBaseAddress="http://iegeasycreditcardservice.azurewebsites.net/";
+        private static readonly string creditcardServiceBaseAddress= "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
 
         public CashDeskController(ILogger<CashDeskController> logger)
         {
