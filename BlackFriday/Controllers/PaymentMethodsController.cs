@@ -16,8 +16,8 @@ namespace BlackFriday.Controllers
     {
         //https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client
         private readonly ILogger<PaymentMethodsController> _logger;
-        private static readonly string creditcardServiceBaseAddress = "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
-
+        private static readonly string[] creditcardServiceBaseAddress = {"https://iegeasycreditcardservice20180922084919.azurewebsites.net/",
+                                                                         "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/"};
 
         public PaymentMethodsController(ILogger<PaymentMethodsController> logger)
         {
@@ -29,13 +29,13 @@ namespace BlackFriday.Controllers
             List<string> acceptedPaymentMethods = null;//= new string[] { "Diners", "Master" };
             _logger.LogError("Accepted Paymentmethods");
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(creditcardServiceBaseAddress);
+            client.BaseAddress = new Uri(creditcardServiceBaseAddress[0]);
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
 
 
-            HttpResponseMessage response = client.GetAsync(creditcardServiceBaseAddress+ "/api/AcceptedCreditCards").Result;
+            HttpResponseMessage response = client.GetAsync(creditcardServiceBaseAddress[0]+ "/api/AcceptedCreditCards").Result;
             if (response.IsSuccessStatusCode)
             {
                 acceptedPaymentMethods = response.Content.ReadAsAsync<List<string>>().Result;
