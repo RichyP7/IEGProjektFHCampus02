@@ -15,23 +15,28 @@ namespace BlackFriday.Controllers
     public class PaymentMethodsController : Controller
     {
         //https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client
+        #region Data
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PaymentMethodsController> _logger;
         private static readonly string[] creditcardServiceBaseAddress = {"https://iegeasycreditcardservice20180922084919.azurewebsites.net/",
                                                                          "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/"};
-
-        public PaymentMethodsController(ILogger<PaymentMethodsController> logger)
+        #endregion
+        public PaymentMethodsController(ILogger<PaymentMethodsController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
         }
         [HttpGet]
         public IEnumerable<string> Get()
         {
             List<string> acceptedPaymentMethods = null;//= new string[] { "Diners", "Master" };
             _logger.LogError("Accepted Paymentmethods");
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(creditcardServiceBaseAddress[0]);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var client = _httpClientFactory.CreateClient("CreditCardService");
+
+            //HttpClient client = new HttpClient();
+            //client.BaseAddress = new Uri(creditcardServiceBaseAddress[0]);
+            //client.DefaultRequestHeaders.Accept.Clear();
+            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
 
 
@@ -47,6 +52,10 @@ namespace BlackFriday.Controllers
 
             }
             return acceptedPaymentMethods;
+        }
+        public void DoSomething()
+        {
+
         }
     }
 }

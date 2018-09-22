@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using BlackFriday.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Extensions.Http;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace BlackFriday
 {
     public class Startup
     {
+        private const string BaseURI = "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
+        private const string ALTERNATIVEURI = "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,6 +39,21 @@ namespace BlackFriday
             {
                 c.SwaggerDoc("v1", new Info { Title = "BlackFriday API", Version = "v1" });
             });
+            services.AddHttpClient("CreditCardService", client =>
+            {
+                client.BaseAddress = new Uri(BaseURI);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            }).AddTransientHttpErrorPolicy(
+                builder => builder.FallbackAsync(new HttpResponseMessage()));
+                //, onFallback: async (exception, context) =>
+                //{
+                //    HttpClient client = new HttpClient();
+                //    client.BaseAddress = new Uri(ALTERNATIVEURI);
+                //    client.DefaultRequestHeaders.Accept.Clear();
+                //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //    HttpResponseMessage response = client.GetAsync(ALTERNATIVEURI + "/api/products").Result;
+                //});
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,5 +72,6 @@ namespace BlackFriday
             });
             app.UseMvc();
         }
+
     }
 }
