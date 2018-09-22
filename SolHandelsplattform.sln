@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEGEasyCreditCardService", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogic.Core", "BusinessLogic.Core\BusinessLogic.Core.csproj", "{5F81A188-180C-40E8-A7A5-FD25BBE27417}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "ProductService\ProductService.csproj", "{AA7476B5-62CB-436E-BB18-B89BE47F1C13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5F81A188-180C-40E8-A7A5-FD25BBE27417}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F81A188-180C-40E8-A7A5-FD25BBE27417}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F81A188-180C-40E8-A7A5-FD25BBE27417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA7476B5-62CB-436E-BB18-B89BE47F1C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA7476B5-62CB-436E-BB18-B89BE47F1C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA7476B5-62CB-436E-BB18-B89BE47F1C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA7476B5-62CB-436E-BB18-B89BE47F1C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
