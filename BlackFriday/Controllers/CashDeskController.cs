@@ -17,11 +17,13 @@ namespace BlackFriday.Controllers
     {
 
         private readonly ILogger<CashDeskController> _logger;
+        private readonly IHttpClientFactory httpClientFactory;
         private static readonly string creditcardServiceBaseAddress= "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
 
-        public CashDeskController(ILogger<CashDeskController> logger)
+        public CashDeskController(ILogger<CashDeskController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            this.httpClientFactory = httpClientFactory;
         }
         [HttpGet]
         public IEnumerable<string> Get()
@@ -35,13 +37,10 @@ namespace BlackFriday.Controllers
 
             return "value" + id;
         }
-
-
         [HttpPost]
         public IActionResult Post([FromBody]Basket basket)
         {
            _logger.LogError("TransactionInfo Creditcard: {0} Product:{1} Amount: {2}", new object[] { basket.CustomerCreditCardnumber, basket.Product, basket.AmountInEuro});
-
             //Mapping
             CreditcardTransaction creditCardTransaction = new CreditcardTransaction()
             {
@@ -49,15 +48,9 @@ namespace BlackFriday.Controllers
                 CreditcardNumber = basket.CustomerCreditCardnumber,
                 ReceiverName = basket.Vendor
             };
-
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(creditcardServiceBaseAddress);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var client = httpClientFactory.CreateClient("CreditCardService");
             HttpResponseMessage response =  client.PostAsJsonAsync(creditcardServiceBaseAddress + "/api/CreditcardTransactions", creditCardTransaction).Result;
             response.EnsureSuccessStatusCode();
-           
-            
             return CreatedAtAction("Get", new { id = System.Guid.NewGuid() });
         }
     }
