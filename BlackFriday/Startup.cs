@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Rest.TransientFaultHandling;
 using Polly;
 using Polly.Extensions.Http;
 using Swashbuckle.AspNetCore.Swagger;
@@ -19,8 +20,8 @@ namespace BlackFriday
 {
     public class Startup
     {
-        private const string BaseURI = "https://WRONGiegeasycreditcardservice20180922084919.azurewebsites.net/api/AcceptedCreditCards/";// "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
-        private const string ALTERNATIVEURI = "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/api/AcceptedCreditCards/";
+        private const string BaseURI = "https://iegeasycreditcardservice20180922084919.azurewebsites.at";//AcceptedCreditCardsXXX/";// "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
+        private const string ALTERNATIVEURI = "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/";
 
         public Startup(IConfiguration configuration)
         {
@@ -43,19 +44,15 @@ namespace BlackFriday
             {
                 client.BaseAddress = new Uri(BaseURI);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            }).AddTransientHttpErrorPolicy(
-                builder => builder.FallbackAsync(new HttpResponseMessage()
-                , onFallbackAsync: async (exception, context) =>
-                {
-                    HttpClient client = new HttpClient();
-                    client.BaseAddress = new Uri(ALTERNATIVEURI);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage response = client.GetAsync(ALTERNATIVEURI).Result;
-                }));
-
+            })
+            .AddTransientHttpErrorPolicy(builder => GetRetryPolicy())
+            .AddTransientHttpErrorPolicy(builder => GetCircuitBreakerPolicy());
+            services.AddHttpClient("ALTERNATIVE", client =>
+            {
+                client.BaseAddress = new Uri(ALTERNATIVEURI);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -72,6 +69,17 @@ namespace BlackFriday
             });
             app.UseMvc();
         }
+        private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                 .HandleTransientHttpError().RetryAsync(1);
+        }
 
+        private IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .CircuitBreakerAsync(2, TimeSpan.FromSeconds(50));
+        }
     }
 }
