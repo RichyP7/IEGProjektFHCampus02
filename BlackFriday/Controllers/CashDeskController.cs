@@ -37,13 +37,10 @@ namespace BlackFriday.Controllers
 
             return "value" + id;
         }
-
-
         [HttpPost]
         public IActionResult Post([FromBody]Basket basket)
         {
            _logger.LogError("TransactionInfo Creditcard: {0} Product:{1} Amount: {2}", new object[] { basket.CustomerCreditCardnumber, basket.Product, basket.AmountInEuro});
-
             //Mapping
             CreditcardTransaction creditCardTransaction = new CreditcardTransaction()
             {
@@ -52,14 +49,8 @@ namespace BlackFriday.Controllers
                 ReceiverName = basket.Vendor
             };
             var client = httpClientFactory.CreateClient("CreditCardService");
-            //HttpClient client = new HttpClient();
-            //client.BaseAddress = new Uri(creditcardServiceBaseAddress);
-            //client.DefaultRequestHeaders.Accept.Clear();
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response =  client.PostAsJsonAsync(creditcardServiceBaseAddress + "/api/CreditcardTransactions", creditCardTransaction).Result;
             response.EnsureSuccessStatusCode();
-           
-            
             return CreatedAtAction("Get", new { id = System.Guid.NewGuid() });
         }
     }

@@ -36,7 +36,6 @@ namespace BlackFriday.Controllers
             {
                 products = response.Content.ReadAsAsync<List<string>>().Result;
             }
-
             foreach (var item in products)
             {
                 _logger.LogError("Product {0}", new object[] { item });
