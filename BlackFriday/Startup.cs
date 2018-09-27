@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BlackFriday.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,8 @@ namespace BlackFriday
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+                .AddXmlSerializerFormatters();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Black Friday", Version = "v1" });
@@ -45,6 +47,7 @@ namespace BlackFriday
             {
                 client.BaseAddress = new Uri(Configuration.GetConnectionString(connectionname));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
             })
             .AddTransientHttpErrorPolicy(builder => GetRetryPolicy())
             .AddTransientHttpErrorPolicy(builder => GetCircuitBreakerPolicy());

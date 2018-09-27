@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BlackFriday.Controllers
 {
-    [Produces("application/json")]
+    //[Produces("application/json")]
     [Route("api/PaymentMethods")]
     public class PaymentMethodsController : Controller
     {
