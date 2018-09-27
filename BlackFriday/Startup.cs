@@ -20,9 +20,6 @@ namespace BlackFriday
 {
     public class Startup
     {
-        private const string BaseURI = "https://iegeasycreditcardservice20180922084919.azurewebsites.at";//AcceptedCreditCardsXXX/";// "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
-        private const string ALTERNATIVEURI = "https://iegeasycreditcardservice20180922124832v2.azurewebsites.net/";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,19 +35,22 @@ namespace BlackFriday
             {
                 c.SwaggerDoc("v1", new Info { Title = "BlackFriday API", Version = "v1" });
             });
-            services.AddHttpClient("CreditCardService", client =>
+            var x = Configuration.GetConnectionString("AlternativeConnection");
+            AddHTTPClientWithErrorPolicy(services, "DefaultConnection");
+            AddHTTPClientWithErrorPolicy(services, "AlternativeConnection");
+        }
+
+        private void AddHTTPClientWithErrorPolicy(IServiceCollection services,string connectionname)
+        {
+            services.AddHttpClient(connectionname, client =>
             {
-                client.BaseAddress = new Uri(BaseURI);
+                client.BaseAddress = new Uri(Configuration.GetConnectionString(connectionname));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             })
             .AddTransientHttpErrorPolicy(builder => GetRetryPolicy())
             .AddTransientHttpErrorPolicy(builder => GetCircuitBreakerPolicy());
-            services.AddHttpClient("ALTERNATIVE", client =>
-            {
-                client.BaseAddress = new Uri(ALTERNATIVEURI);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            });
         }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -63,6 +63,7 @@ namespace BlackFriday
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Black Friday API");
             });
+            
             app.UseMvc();
         }
         private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

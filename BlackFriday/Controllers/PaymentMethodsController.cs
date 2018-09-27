@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Polly.CircuitBreaker;
+using Microsoft.Extensions.Configuration;
 
 namespace BlackFriday.Controllers
 {
@@ -18,10 +19,11 @@ namespace BlackFriday.Controllers
         #region Data
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PaymentMethodsController> _logger;
-        private const string SUBURI = "/api/AcceptedCreditCards";
-        private const string HTTPCLIENTNAME = "CreditCardService";
+        private const string SUBURI = "api/AcceptedCreditCards";
+        private const string HTTPCLIENTNAME = "DefaultConnection";
+        private const string ALTERNATIVECLIENT = "AlternativeConnection";
         #endregion
-        public PaymentMethodsController(ILogger<PaymentMethodsController> logger, IHttpClientFactory httpClientFactory)
+        public PaymentMethodsController(ILogger<PaymentMethodsController> logger, IHttpClientFactory httpClientFactory,IConfiguration config)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -33,7 +35,7 @@ namespace BlackFriday.Controllers
             List<string> acceptedPaymentMethods = null;
             _logger.LogInformation("Accepted Paymentmethods");
             var client = _httpClientFactory.CreateClient(HTTPCLIENTNAME);
-            HttpResponseMessage response;
+            HttpResponseMessage response = new HttpResponseMessage();
             try
             {
                 response = await client.GetAsync(SUBURI);
@@ -45,14 +47,14 @@ namespace BlackFriday.Controllers
             if (response.IsSuccessStatusCode)
             {
                 acceptedPaymentMethods = response.Content.ReadAsAsync<List<string>>().Result;
+                LogPaymentMethods(acceptedPaymentMethods);
             }
-            LogPaymentMethods(acceptedPaymentMethods);
             return acceptedPaymentMethods;
         }
         private async Task<HttpResponseMessage> HandleBrokenCircuit(BrokenCircuitException ex)
         {
             _logger.LogError(" Backup Infrastructure Accepted Paymentmethods" + ex.Message);
-            var client = _httpClientFactory.CreateClient("ALTERNATIVE");
+            var client = _httpClientFactory.CreateClient(ALTERNATIVECLIENT);
             HttpResponseMessage response = await client.GetAsync( SUBURI);
             return response;
         }
