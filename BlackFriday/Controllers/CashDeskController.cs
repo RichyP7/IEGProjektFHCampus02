@@ -31,12 +31,12 @@ namespace BlackFriday.Controllers
 
             return new string[] { "value1", "value2" };
         }
-        [HttpGet]
-        public string Get(int id)
-        {
+        //[HttpGet]
+        //public string Get(int id)
+        //{
 
-            return "value" + id;
-        }
+        //    return "value" + id;
+        //}
         [HttpPost]
         public IActionResult Post([FromBody]Basket basket)
         {

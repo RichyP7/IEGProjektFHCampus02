@@ -33,9 +33,8 @@ namespace BlackFriday
             services.AddMvc();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "BlackFriday API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-            var x = Configuration.GetConnectionString("AlternativeConnection");
             AddHTTPClientWithErrorPolicy(services, "DefaultConnection");
             AddHTTPClientWithErrorPolicy(services, "AlternativeConnection");
         }
@@ -61,9 +60,9 @@ namespace BlackFriday
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Black Friday API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
             });
-            
             app.UseMvc();
         }
         private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

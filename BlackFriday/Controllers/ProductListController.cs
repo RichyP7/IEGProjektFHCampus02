@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BlackFriday.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/productlist")]
     public class ProductListController : Controller
     {
         private readonly ILogger<ProductListController> _logger;
