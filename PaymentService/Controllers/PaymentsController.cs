@@ -11,16 +11,25 @@ namespace PaymentService.Controllers
     [ApiController]
     public class PaymentsController : ControllerBase
     {
+        static List<Payment> payments;
+
+        public PaymentsController()
+        {
+            payments = new List<Payment>()
+            {
+                new Payment() { Id = "paypal", Name = "Paypal", Description = "Paypal" },
+                new Payment() { Id = "sofort", Name = "Sofortüberweisung", Description = "Sofortüberweisung" }
+            };
+
+        }
+
+        public static List<Payment> Payments { get => payments; set => payments = value; }
+
         // GET api/payments
         [HttpGet]
         public ActionResult<IEnumerable<Payment>> Get()
         {
-            
-            return new Payment[]
-            {
-                new Payment (){ Id = "paypal", Name = "Paypal", Description = "Paypal"},
-                new Payment (){ Id = "sofort", Name = "Sofortüberweisung", Description = "Sofortüberweisung"}
-            };
+            return Payments;
         }
 
         // GET api/values/5
@@ -32,8 +41,10 @@ namespace PaymentService.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<IEnumerable<Payment>> Post([FromBody] Payment payment)
         {
+            Payments.Add(payment);
+            return Payments;
         }
 
         // PUT api/values/5

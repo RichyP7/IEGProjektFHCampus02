@@ -28,6 +28,7 @@ namespace PaymentService
         {
             services.AddMvc(config => {
                 config.OutputFormatters.Add(new CsvOutputFormatter());
+                config.InputFormatters.Add(new CsvInputFormatter());
             })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddXmlSerializerFormatters();
