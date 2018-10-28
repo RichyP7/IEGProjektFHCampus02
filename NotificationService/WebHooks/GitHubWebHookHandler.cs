@@ -12,7 +12,7 @@ namespace NotificationService.WebHooks
         }
         public override Task ExecuteAsync(string generator, WebHookHandlerContext context)
         {
-            // For more information about GitHub WebHook payloads, please see 
+            // For more information about GitHub WebHook payloads, please see
             // 'https://developer.github.com/webhooks/'
             JObject entry = context.GetDataOrDefault<JObject>();
             return Task.FromResult(true);
