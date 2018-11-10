@@ -1,2 +1,3 @@
 # IEGProjektFHCampus02
-FH Campus02 Projekt Microserviceansatz für Integration elektronischer Geschäftsprozesse mit Webhooks
+FH Campus02 Projekt Microserviceansatz für Integration elektronischer Geschäftsprozesse 
+Enthält Webhooks
