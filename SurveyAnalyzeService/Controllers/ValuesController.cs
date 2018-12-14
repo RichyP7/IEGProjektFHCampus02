@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommonServiceLib.Discovery;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace SurveyAnalyzeService.Controllers
 {
@@ -10,18 +13,22 @@ namespace SurveyAnalyzeService.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly ApiClient apiClient = new ApiClient(); 
+
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<Dictionary<string, List<Uri>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return apiClient.serverUrls;
+           // return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet("{serviceId}")]
+        public ActionResult<string> Get(string serviceId)
         {
-            return "value";
+            return apiClient.GetLoadBalancedUrl(serviceId);
         }
 
         // POST api/values

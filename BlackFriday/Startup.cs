@@ -16,6 +16,8 @@ using Microsoft.Rest.TransientFaultHandling;
 using Polly;
 using Polly.Extensions.Http;
 using Swashbuckle.AspNetCore.Swagger;
+using CommonServiceLib.Discovery;
+using Consul;
 
 namespace BlackFriday
 {
@@ -31,6 +33,12 @@ namespace BlackFriday
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
+            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            {
+                var address = Configuration["consulConfig:address"];
+                consulConfig.Address = new Uri(address);
+            }));
             services.AddMvc()
                 .AddXmlSerializerFormatters();
             services.AddSwaggerGen(c =>
@@ -54,7 +62,7 @@ namespace BlackFriday
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -66,6 +74,7 @@ namespace BlackFriday
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Black Friday V1");
             });
             app.UseMvc();
+            app.RegisterWithConsul(lifetime);
         }
         private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {

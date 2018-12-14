@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using CommonServiceLib.Discovery;
+using Consul;
 
 namespace IEGEasyCreditCardService
 {
@@ -30,10 +32,16 @@ namespace IEGEasyCreditCardService
             {
                 c.SwaggerDoc("v1", new Info { Title = "IEGEasyCreditCardService API", Version = "v1" });
             });
+            services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
+            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            {
+                var address = Configuration["consulConfig:address"];
+                consulConfig.Address = new Uri(address);
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -48,6 +56,7 @@ namespace IEGEasyCreditCardService
             });
 
             app.UseMvc();
+            app.RegisterWithConsul(lifetime);
         }
     }
 }

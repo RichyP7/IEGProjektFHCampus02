@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Polly.CircuitBreaker;
 using Microsoft.Extensions.Configuration;
+using CommonServiceLib.Discovery;
 
 namespace BlackFriday.Controllers
 {
@@ -22,6 +23,9 @@ namespace BlackFriday.Controllers
         private const string SUBURI = "api/AcceptedCreditCards";
         private const string HTTPCLIENTNAME = "DefaultConnection";
         private const string ALTERNATIVECLIENT = "AlternativeConnection";
+
+        private readonly ApiClient apiClient = new ApiClient();
+
         #endregion
         public PaymentMethodsController(ILogger<PaymentMethodsController> logger, IHttpClientFactory httpClientFactory,IConfiguration config)
         {
@@ -35,6 +39,7 @@ namespace BlackFriday.Controllers
             List<string> acceptedPaymentMethods = null;
             _logger.LogInformation("Accepted Paymentmethods");
             var client = _httpClientFactory.CreateClient(HTTPCLIENTNAME);
+            client.BaseAddress = new Uri(apiClient.GetLoadBalancedUrl("creditcard-service"));
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {

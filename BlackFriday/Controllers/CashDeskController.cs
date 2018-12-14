@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using BlackFriday.Models;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using CommonServiceLib.Discovery;
 
 namespace BlackFriday.Controllers
 {
@@ -19,6 +20,9 @@ namespace BlackFriday.Controllers
         private readonly ILogger<CashDeskController> _logger;
         private readonly IHttpClientFactory httpClientFactory;
         private static readonly string creditcardServiceBaseAddress= "https://iegeasycreditcardservice20180922084919.azurewebsites.net/";
+
+        private readonly ApiClient apiClient = new ApiClient();
+
 
         public CashDeskController(ILogger<CashDeskController> logger, IHttpClientFactory httpClientFactory)
         {
@@ -49,7 +53,7 @@ namespace BlackFriday.Controllers
                 ReceiverName = basket.Vendor
             };
             var client = httpClientFactory.CreateClient("CreditCardService");
-            HttpResponseMessage response =  client.PostAsJsonAsync(creditcardServiceBaseAddress + "/api/CreditcardTransactions", creditCardTransaction).Result;
+            HttpResponseMessage response =  client.PostAsJsonAsync(apiClient.GetLoadBalancedUrl("creditcard-service") + "/api/CreditcardTransactions", creditCardTransaction).Result;
             response.EnsureSuccessStatusCode();
             return CreatedAtAction("Get", new { id = System.Guid.NewGuid() });
         }

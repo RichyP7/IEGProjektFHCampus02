@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PaymentService.Data;
 using PaymentService.Formatters;
+using CommonServiceLib.Discovery;
+using Consul;
 
 namespace PaymentService
 {
@@ -36,12 +38,17 @@ namespace PaymentService
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddXmlSerializerFormatters();
             services.AddSingleton<PaymentStorage>();
+            services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
+            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            {
+                var address = Configuration["consulConfig:address"];
+                consulConfig.Address = new Uri(address);
+            }));
 
-                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -54,6 +61,7 @@ namespace PaymentService
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.RegisterWithConsul(lifetime);
         }
     }
 }
