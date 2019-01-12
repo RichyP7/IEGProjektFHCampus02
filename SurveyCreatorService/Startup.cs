@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CommonServiceLib.Discovery;
+﻿using CommonServiceLib.Discovery;
 using Consul;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using SurveyCreatorService.Application;
+using System;
 
 namespace SurveyCreatorService
 {
@@ -32,6 +27,7 @@ namespace SurveyCreatorService
             {
                 consulConfig.Address = new Uri(ConsulConfig.Address);
             }));
+            services.AddTransient<ISurveyService, SurveyService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
