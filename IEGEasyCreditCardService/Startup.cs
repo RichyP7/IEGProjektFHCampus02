@@ -35,8 +35,7 @@ namespace IEGEasyCreditCardService
             services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
             services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
             {
-                var address = Configuration["consulConfig:address"];
-                consulConfig.Address = new Uri(address);
+                consulConfig.Address = new Uri(ConsulConfig.Address);
             }));
         }
 

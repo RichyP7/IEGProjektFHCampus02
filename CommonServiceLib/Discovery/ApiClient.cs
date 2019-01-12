@@ -54,8 +54,7 @@ namespace CommonServiceLib.Discovery
         {
             var consulClient = new ConsulClient(c =>
             {
-                var uri = new Uri(_configuration["consulConfig:address"]);
-                c.Address = uri;
+                c.Address = new Uri(ConsulConfig.Address);
             });
 
             _logger.LogInformation("Discovering Services from Consul.");

@@ -2,7 +2,7 @@
 {
     public class ConsulConfig
     {
-        public string Address { get; set; }
+        public static string Address { get; set; } = "http://localhost:8500";
         public string ServiceName { get; set; }
         public string ServiceID { get; set; }
     }
