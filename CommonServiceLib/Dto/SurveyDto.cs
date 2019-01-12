@@ -7,6 +7,6 @@ namespace CommonServiceLib.Dto
     public class SurveyDto
     {
         public int Id { get; set; }
-        List<QuestionDto> SurveyQuestions { get; set; }
+        public List<QuestionDto> SurveyQuestions { get; set; }
     }
 }
