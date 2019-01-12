@@ -28,7 +28,7 @@ namespace SurveyPublishService.Controllers
 
         private List<SurveyDto> GetSurveys() {
             List<SurveyDto> surveys = null;
-            HttpResponseMessage response = await apiClient.client.GetAsync(apiClient.GetLoadBalancedUrl("survey-creator-service") + "api/surveys").Result;
+            HttpResponseMessage response = apiClient.client.GetAsync(apiClient.GetLoadBalancedUrl("survey-creator-service") + "api/surveys").Result;
             if (response.IsSuccessStatusCode)
             {
                 surveys = response.Content.ReadAsAsync<List<SurveyDto>>().Result;
