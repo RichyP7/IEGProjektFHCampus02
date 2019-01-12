@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyAnalyzeService", "Sur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonServiceLib", "CommonServiceLib\CommonServiceLib.csproj", "{DC87A00E-627A-41F1-93DF-9C9D8E60713F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JWTAuthentication", "JWTAuthentication\JWTAuthentication.csproj", "{4FA540AD-7125-425B-8F3A-70234E4858F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{DC87A00E-627A-41F1-93DF-9C9D8E60713F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC87A00E-627A-41F1-93DF-9C9D8E60713F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC87A00E-627A-41F1-93DF-9C9D8E60713F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FA540AD-7125-425B-8F3A-70234E4858F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FA540AD-7125-425B-8F3A-70234E4858F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FA540AD-7125-425B-8F3A-70234E4858F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FA540AD-7125-425B-8F3A-70234E4858F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
