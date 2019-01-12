@@ -28,7 +28,7 @@ namespace SurveyPublishService.Controllers
 
         private List<SurveyDto> GetSurveys() {
             List<SurveyDto> surveys = null;
-            HttpResponseMessage response = apiClient.client.GetAsync(apiClient.GetLoadBalancedUrl("survey-creator-service") + "/api/surveys").Result;
+            HttpResponseMessage response = await apiClient.client.GetAsync(apiClient.GetLoadBalancedUrl("survey-creator-service") + "api/surveys").Result;
             if (response.IsSuccessStatusCode)
             {
                 surveys = response.Content.ReadAsAsync<List<SurveyDto>>().Result;
@@ -39,7 +39,7 @@ namespace SurveyPublishService.Controllers
         private SurveyAnalyzeDto GetAnalyzedSurveys(List<SurveyDto> surveys)
         {
             SurveyAnalyzeDto surveyAnalyze = null;
-            HttpResponseMessage response = apiClient.client.PostAsync(apiClient.GetLoadBalancedUrl("survey-analyze-service") + "/api/surveys/analyze", new StringContent(JObject.FromObject(surveys).ToString())).Result;
+            HttpResponseMessage response = apiClient.client.PostAsync(apiClient.GetLoadBalancedUrl("survey-analyze-service") + "api/surveys/analyze", new StringContent(JArray.FromObject(surveys).ToString())).Result;
             if (response.IsSuccessStatusCode)
             {
                 surveyAnalyze = response.Content.ReadAsAsync<SurveyAnalyzeDto>().Result;
