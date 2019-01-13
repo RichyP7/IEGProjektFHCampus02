@@ -11,7 +11,7 @@ namespace SurveyAnalyzeService.Controllers
     public class SurveyAnalyzeController : Controller
     {
         [HttpPost]
-        public ActionResult<SurveyAnalyzeDto> AnalyzeSurveys(List<SurveyDto> surveys)
+        public ActionResult<SurveyAnalyzeDto> AnalyzeSurveys([FromBody]List<SurveyDto> surveys)
         {
             return Ok(Analyze(surveys));
         }

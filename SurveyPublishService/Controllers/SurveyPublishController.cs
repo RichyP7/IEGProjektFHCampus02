@@ -38,13 +38,9 @@ namespace SurveyPublishService.Controllers
 
         private SurveyAnalyzeDto GetAnalyzedSurveys(List<SurveyDto> surveys)
         {
-            SurveyAnalyzeDto surveyAnalyze = null;
-            HttpResponseMessage response = apiClient.client.PostAsync(apiClient.GetLoadBalancedUrl("survey-analyze-service") + "api/surveys/analyze", new StringContent(JArray.FromObject(surveys).ToString())).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                surveyAnalyze = response.Content.ReadAsAsync<SurveyAnalyzeDto>().Result;
-            }
-            return surveyAnalyze;
+            HttpResponseMessage response = apiClient.client.PostAsJsonAsync(apiClient.GetLoadBalancedUrl("survey-analyze-service") + "api/surveys/analyze", surveys).Result;
+            response.EnsureSuccessStatusCode();
+            return response.Content.ReadAsAsync<SurveyAnalyzeDto>().Result;
         }
     }
 }
