@@ -7,6 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SurveyCreatorService.Application;
 using System;
+using OpenTracing;
+using OpenTracing.Util;
+using Jaeger.Samplers;
+using Jaeger;
+
 
 namespace SurveyCreatorService
 {
@@ -29,6 +34,21 @@ namespace SurveyCreatorService
             }));
             services.AddTransient<ISurveyService, SurveyService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            // Adds the Jaeger Tracer.
+            services.AddSingleton<ITracer>(serviceProvider =>
+            {
+                string serviceName = serviceProvider.GetRequiredService<IHostingEnvironment>().ApplicationName;
+
+                // This will log to a default localhost installation of Jaeger.
+                var tracer = new Tracer.Builder(serviceName)
+                    .WithSampler(new ConstSampler(true))
+                    .Build();
+
+                // Allows code that can't use DI to also access the tracer.
+                GlobalTracer.Register(tracer);
+
+                return tracer;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -7,7 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="0.7.2.6" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1"/>
+
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +17,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonServiceLib\CommonServiceLib.csproj" />
+    <PackageReference Include="Jaeger" Version="0.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="OpenTracing" Version="0.12.0" />
+    <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.5.0" />
   </ItemGroup>
 
 </Project>

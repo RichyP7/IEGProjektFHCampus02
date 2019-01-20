@@ -329,3 +329,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/consul_1.4.0_windows_amd64.zip
+/jaeger-1.8.0-windows-amd64.tar.gz
+/jaeger-1.8.0-windows-amd64
+/consul_1.4.0_windows_amd64
